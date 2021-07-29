@@ -1,0 +1,2 @@
+rootProject.name = "Dora TV"
+include ':app'
