@@ -3,8 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/ahtan/AndroidStudioProjects/DoraTV/app/src/main/res/layout/activity_channel.xml" value="0.1" />
+        <entry key="..\:/Users/ahtan/AndroidStudioProjects/DoraTV/app/src/main/res/layout/activity_channel.xml" value="0.15" />
         <entry key="..\:/Users/ahtan/AndroidStudioProjects/DoraTV/app/src/main/res/layout/activity_splash.xml" value="0.1" />
+        <entry key="..\:/Users/ahtan/AndroidStudioProjects/DoraTV/app/src/main/res/layout/activity_sub_channel.xml" value="0.1" />
       </map>
     </option>
   </component>

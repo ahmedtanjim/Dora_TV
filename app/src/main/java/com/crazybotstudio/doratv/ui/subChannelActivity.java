@@ -43,7 +43,7 @@ public class subChannelActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sub_channel);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         if (getIntent().hasExtra("channelName")) {
             channelName = getIntent().getExtras().get("channelName").toString();
         }

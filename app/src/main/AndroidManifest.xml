@@ -26,7 +26,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.subChannelActivity" />
+        <activity android:name=".ui.subChannelActivity"
+            android:theme="@style/Theme.DoraTV.NoActionBar"/>
         <activity
             android:name=".ui.CategoryActivity"
             android:theme="@style/Theme.DoraTV.NoActionBar" />

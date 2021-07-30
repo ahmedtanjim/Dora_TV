@@ -82,17 +82,11 @@ public class channelActivity extends AppCompatActivity {
         recyclerView = this.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-                creatads();
-            }
-        });
 
         db_reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NotNull DataSnapshot snapshot) {
-                if (!snapshot.exists()) {
+                if (!snapshot.exists() && category.equals("Live Events")) {
                     recyclerView.setVisibility(View.INVISIBLE);
                     noTextView.setVisibility(View.VISIBLE);
                     noImageView.setVisibility(View.VISIBLE);
