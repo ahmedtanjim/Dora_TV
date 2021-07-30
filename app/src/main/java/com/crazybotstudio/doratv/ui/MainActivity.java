@@ -1,5 +1,7 @@
 package com.crazybotstudio.doratv.ui;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -10,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,21 +82,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
         vpnControl.stopVpn(this);
-        switch (item.getItemId()) {
-            case R.id.nav_telegram:
-                Intent telegram = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/doratvhd"));
-                startActivity(telegram);
-                break;
-            case R.id.nav_about:
-                try {
-                    Intent facebook = new Intent(Intent.ACTION_VIEW, Uri.parse("fb://facewebmodal/f?href=https://facebook.com/tanjim.crazybot"));
-                    startActivity(facebook);
-                } catch (Exception e) {
-                    Intent webface = new Intent(Intent.ACTION_VIEW, Uri.parse("https://facebook.com/tanjim.crazybot"));
-                    startActivity(webface);
-                }
-                break;
+        if (item.getItemId() == R.id.nav_telegram) {
+            Intent telegram = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/doratvhd"));
+            startActivity(telegram);
+        } else if (item.getItemId() == R.id.nav_about) {
+            String facebookId = "fb://page/103215961889683";
+            String urlPage = "https://www.facebook.com/Crazybot.studio";
 
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(facebookId )));
+            } catch (Exception e) {
+                Log.e(TAG, "Application not intalled.");
+                //Open url web page.
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(urlPage)));
+            }
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;

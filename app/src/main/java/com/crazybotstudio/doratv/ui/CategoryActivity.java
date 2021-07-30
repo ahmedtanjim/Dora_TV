@@ -284,7 +284,12 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
                                     Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
                                     profileIntent.putExtra("category", "Movies");
                                     startActivity(profileIntent);
-                                } else {
+                                } else if (category.equals("Webseries")) {
+                                    Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
+                                    profileIntent.putExtra("category", "Webseries");
+                                    startActivity(profileIntent);
+                                }
+                                else {
                                     Intent liveIntent = new Intent(CategoryActivity.this, channelActivity.class);
                                     liveIntent.putExtra("category", category);
                                     startActivity(liveIntent);
@@ -346,7 +351,7 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
                 SharedPreferences.Editor editor = settings.edit();
 
                 editor.putString("skipMessage", checkBoxResult);
-                editor.commit();
+                editor.apply();
 
                 // Do what you want to do on "OK" action
 
