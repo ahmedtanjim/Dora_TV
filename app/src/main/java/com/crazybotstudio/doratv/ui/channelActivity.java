@@ -143,10 +143,15 @@ public class channelActivity extends AppCompatActivity {
                                     startAppAd.loadAd(StartAppAd.AdMode.AUTOMATIC);
                                     startAppAd.showAd(getApplicationContext());*/
                                 } else {
-                                    Intent profileIntent = new Intent(channelActivity.this, WebActivity.class);
-                                    profileIntent.putExtra("link", channelLink);
-                                    profileIntent.putExtra("type", type);
+//                                    Intent profileIntent = new Intent(channelActivity.this, WebActivity.class);
+//                                    profileIntent.putExtra("link", channelLink);
+//                                    profileIntent.putExtra("type", type);
+//                                    profileIntent.putExtra("channelName", channelName);
+//                                    startActivity(profileIntent);
+
+                                    Intent profileIntent = new Intent(channelActivity.this, PlayerActivity.class);
                                     profileIntent.putExtra("channelName", channelName);
+                                    profileIntent.putExtra("url_media_item", channelLink);
                                     startActivity(profileIntent);
                                 }
 
@@ -212,13 +217,15 @@ public class channelActivity extends AppCompatActivity {
                                     startAppAd.loadAd(StartAppAd.AdMode.AUTOMATIC);
                                     startAppAd.showAd(getApplicationContext());*/
                                 } else {
-                                    Intent profileIntent = new Intent(channelActivity.this, WebActivity.class);
-                                    profileIntent.putExtra("link", channelLink);
-                                    profileIntent.putExtra("type", type);
+//                                    Intent profileIntent = new Intent(channelActivity.this, WebActivity.class);
+//                                    profileIntent.putExtra("link", channelLink);
+//                                    profileIntent.putExtra("type", type);
+//                                    startActivity(profileIntent);
+                                    Intent profileIntent = new Intent(channelActivity.this, PlayerActivity.class);
+                                    profileIntent.putExtra("url_media_item", channelLink);
+                                    profileIntent.putExtra("channelName", channelName);
                                     startActivity(profileIntent);
                                 }
-
-
                             }
                         });
                     }
