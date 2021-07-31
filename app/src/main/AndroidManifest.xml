@@ -5,6 +5,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
 
     <application
         android:allowBackup="true"
@@ -19,7 +20,8 @@
         <activity android:name=".ui.ExitActivity"
             android:autoRemoveFromRecents="true"
             android:theme="@android:style/Theme.NoDisplay"/>
-        <activity android:name=".ui.SplashActivity">
+        <activity android:name=".ui.SplashActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,11 +32,8 @@
             android:theme="@style/Theme.DoraTV.NoActionBar"/>
         <activity
             android:name=".ui.CategoryActivity"
-            android:theme="@style/Theme.DoraTV.NoActionBar" />
-
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/app_id"/>
+            android:theme="@style/Theme.DoraTV.NoActionBar"
+            />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
@@ -52,7 +51,6 @@
             android:hardwareAccelerated="true"
             android:theme="@style/Theme.DoraTV.NoActionBar" />
         <meta-data android:name="com.startapp.sdk.APPLICATION_ID" android:value="206454256" />
-        <meta-data android:name="com.startapp.sdk.RETURN_ADS_ENABLED" android:value="false" />
     </application>
 
 </manifest>
