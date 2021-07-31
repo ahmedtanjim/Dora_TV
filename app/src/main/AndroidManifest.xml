@@ -42,8 +42,7 @@
         <activity android:name=".ui.aboutActivity" />
         <activity
             android:name=".ui.channelActivity"
-            android:theme="@style/Theme.DoraTV.NoActionBar"
-            android:screenOrientation="fullSensor" />
+            android:theme="@style/Theme.DoraTV.NoActionBar" />
         <activity
             android:name=".ui.WebActivity"
             android:screenOrientation="sensorLandscape"
@@ -51,8 +50,9 @@
         <activity
             android:name=".ui.MainActivity"
             android:hardwareAccelerated="true"
-            android:screenOrientation="fullSensor"
             android:theme="@style/Theme.DoraTV.NoActionBar" />
+        <meta-data android:name="com.startapp.sdk.APPLICATION_ID" android:value="206454256" />
+        <meta-data android:name="com.startapp.sdk.RETURN_ADS_ENABLED" android:value="false" />
     </application>
 
 </manifest>

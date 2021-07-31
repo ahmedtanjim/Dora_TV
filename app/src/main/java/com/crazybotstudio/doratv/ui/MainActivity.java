@@ -2,40 +2,34 @@ package com.crazybotstudio.doratv.ui;
 
 import static android.content.ContentValues.TAG;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.crazybotstudio.doratv.R;
 import com.crazybotstudio.doratv.models.category;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.drawerlayout.widget.DrawerLayout;
-
-import android.view.MenuItem;
+import com.startapp.sdk.adsbase.StartAppAd;
+import com.startapp.sdk.adsbase.StartAppSDK;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -77,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+        StartAppSDK.init(this, getString(R.string.start_app_id), false);
+        StartAppAd.disableSplash();
     }
 
     @Override
@@ -132,6 +128,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 Intent profileIntent = new Intent(MainActivity.this, channelActivity.class);
                                 profileIntent.putExtra("category", visit_user_id);
                                 startActivity(profileIntent);
+                                if (cat.equals("categorys")) {
+                                    StartAppAd startAppAd = new StartAppAd(getApplicationContext());
+                                    startAppAd.loadAd(StartAppAd.AdMode.AUTOMATIC);
+                                    startAppAd.showAd(getApplicationContext());
+                                }
                             }
 
                         });

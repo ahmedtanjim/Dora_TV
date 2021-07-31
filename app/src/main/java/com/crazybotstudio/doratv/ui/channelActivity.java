@@ -23,17 +23,6 @@ import com.crazybotstudio.doratv.R;
 import com.crazybotstudio.doratv.models.channel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.ads.AdError;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.google.android.gms.ads.interstitial.InterstitialAd;
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,12 +30,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.startapp.sdk.adsbase.StartAppAd;
+import com.startapp.sdk.adsbase.StartAppSDK;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
-
-import static android.content.ContentValues.TAG;
 
 public class channelActivity extends AppCompatActivity {
     private String category;
@@ -54,13 +43,11 @@ public class channelActivity extends AppCompatActivity {
     private DatabaseReference db_reference;
     private StorageReference storageReference;
     private RecyclerView recyclerView;
-    private InterstitialAd mInterstitialAd;
     private String channelName;
     private String multi, type;
     private String channelLink;
     private ImageView noImageView;
     private TextView noTextView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +69,6 @@ public class channelActivity extends AppCompatActivity {
         recyclerView = this.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-
         db_reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NotNull DataSnapshot snapshot) {
@@ -98,60 +84,8 @@ public class channelActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    private void creatads() {
-        AdRequest adRequest = new AdRequest.Builder().build();
-        ads(adRequest);
-    }
-
-    private void ads(AdRequest adRequest) {
-        vpnControl.stopVpn(this);
-        InterstitialAd.load(this, getString(R.string.interstitial_ads_1), adRequest, new InterstitialAdLoadCallback() {
-            @Override
-            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                // The mInterstitialAd reference will be null until
-                // an ad is loaded.
-                mInterstitialAd = interstitialAd;
-                Log.i(TAG, "onAdLoaded");
-
-                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                    @Override
-                    public void onAdDismissedFullScreenContent() {
-                        // Called when fullscreen content is dismissed.
-                        Log.d("TAG", "The ad was dismissed.");
-                        if (multi.equals("y")) {
-                            Intent profileIntent = new Intent(channelActivity.this, subChannelActivity.class);
-                            profileIntent.putExtra("channelName", channelName);
-                            startActivity(profileIntent);
-                        } else {
-                            Intent profileIntent = new Intent(channelActivity.this, WebActivity.class);
-                            profileIntent.putExtra("link", channelLink);
-                            profileIntent.putExtra("type", type);
-                            startActivity(profileIntent);
-                        }
-                    }
-
-                    @Override
-                    public void onAdFailedToShowFullScreenContent(@NotNull AdError adError) {
-                        Log.d("TAG", "The ad failed to show.");
-                    }
-
-                    @Override
-                    public void onAdShowedFullScreenContent() {
-                        mInterstitialAd = null;
-                        Log.d("TAG", "The ad was shown.");
-                    }
-                });
-            }
-
-            @Override
-            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                // Handle the error
-                Log.i(TAG, loadAdError.getMessage());
-                mInterstitialAd = null;
-            }
-        });
+        StartAppSDK.init(this, getString(R.string.start_app_id), false);
+        StartAppAd.disableSplash();
     }
 
     @Override
@@ -200,22 +134,22 @@ public class channelActivity extends AppCompatActivity {
                                 channelLink = model.getChannellink();
                                 multi = model.getMulti();
                                 type = model.getType();
-                                if (mInterstitialAd != null) {
-                                    mInterstitialAd.show(channelActivity.this);
+                                Log.d("TAG", "The interstitial ad wasn't ready yet.");
+                                if (multi.equals("y")) {
+                                    Intent profileIntent = new Intent(channelActivity.this, subChannelActivity.class);
+                                    profileIntent.putExtra("channelName", channelName);
+                                    startActivity(profileIntent);
+                                    /*StartAppAd startAppAd = new StartAppAd(getApplicationContext());
+                                    startAppAd.loadAd(StartAppAd.AdMode.AUTOMATIC);
+                                    startAppAd.showAd(getApplicationContext());*/
                                 } else {
-                                    Log.d("TAG", "The interstitial ad wasn't ready yet.");
-                                    if (multi.equals("y")) {
-                                        Intent profileIntent = new Intent(channelActivity.this, subChannelActivity.class);
-                                        profileIntent.putExtra("channelName", channelName);
-                                        startActivity(profileIntent);
-                                    } else {
-                                        Intent profileIntent = new Intent(channelActivity.this, WebActivity.class);
-                                        profileIntent.putExtra("link", channelLink);
-                                        profileIntent.putExtra("type", type);
-                                        profileIntent.putExtra("channelName", channelName);
-                                        startActivity(profileIntent);
-                                    }
+                                    Intent profileIntent = new Intent(channelActivity.this, WebActivity.class);
+                                    profileIntent.putExtra("link", channelLink);
+                                    profileIntent.putExtra("type", type);
+                                    profileIntent.putExtra("channelName", channelName);
+                                    startActivity(profileIntent);
                                 }
+
 
                             }
                         });
@@ -252,7 +186,6 @@ public class channelActivity extends AppCompatActivity {
                         .build();
 
 
-
         FirebaseRecyclerAdapter<channel, channelActivity.channelnameViewholder> adapter =
                 new FirebaseRecyclerAdapter<channel, channelActivity.channelnameViewholder>(options) {
                     @Override
@@ -270,21 +203,21 @@ public class channelActivity extends AppCompatActivity {
                                 channelLink = model.getChannellink();
                                 multi = model.getMulti();
                                 type = model.getType();
-                                if (mInterstitialAd != null) {
-                                    mInterstitialAd.show(channelActivity.this);
+                                Log.d("TAG", "The interstitial ad wasn't ready yet.");
+                                if (multi.equals("y")) {
+                                    Intent profileIntent = new Intent(channelActivity.this, subChannelActivity.class);
+                                    profileIntent.putExtra("channelName", channelName);
+                                    startActivity(profileIntent);
+                                    /*StartAppAd startAppAd = new StartAppAd(getApplicationContext());
+                                    startAppAd.loadAd(StartAppAd.AdMode.AUTOMATIC);
+                                    startAppAd.showAd(getApplicationContext());*/
                                 } else {
-                                    Log.d("TAG", "The interstitial ad wasn't ready yet.");
-                                    if (multi.equals("y")) {
-                                        Intent profileIntent = new Intent(channelActivity.this, subChannelActivity.class);
-                                        profileIntent.putExtra("channelName", channelName);
-                                        startActivity(profileIntent);
-                                    } else {
-                                        Intent profileIntent = new Intent(channelActivity.this, WebActivity.class);
-                                        profileIntent.putExtra("link", channelLink);
-                                        profileIntent.putExtra("type", type);
-                                        startActivity(profileIntent);
-                                    }
+                                    Intent profileIntent = new Intent(channelActivity.this, WebActivity.class);
+                                    profileIntent.putExtra("link", channelLink);
+                                    profileIntent.putExtra("type", type);
+                                    startActivity(profileIntent);
                                 }
+
 
                             }
                         });

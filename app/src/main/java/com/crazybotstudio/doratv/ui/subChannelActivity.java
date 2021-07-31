@@ -19,15 +19,12 @@ import com.crazybotstudio.doratv.R;
 import com.crazybotstudio.doratv.models.subChannel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
-import java.util.Objects;
+import com.startapp.sdk.adsbase.StartAppAd;
+import com.startapp.sdk.adsbase.StartAppSDK;
 
 public class subChannelActivity extends AppCompatActivity {
     private String channelName;
@@ -56,6 +53,8 @@ public class subChannelActivity extends AppCompatActivity {
         recyclerView = this.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        StartAppSDK.init(this, getString(R.string.start_app_id), false);
+        StartAppAd.disableSplash();
 
     }
 

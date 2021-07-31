@@ -25,8 +25,6 @@ public class SplashActivity extends AppCompatActivity {
         imageView = findViewById(R.id.imageView);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         Objects.requireNonNull(getSupportActionBar()).hide();
-        Animation animation = AnimationUtils.loadAnimation(this, R.anim.side_slide);
-        imageView.startAnimation(animation);
         new Handler().postDelayed(() -> {
             Intent i = new Intent(SplashActivity.this, CategoryActivity.class);
             startActivity(i);

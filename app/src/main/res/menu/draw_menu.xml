@@ -4,26 +4,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:showIn="navigation_view">
 
-    <!--<group android:checkableBehavior="single">
-        <item android:id="@+id/nab_telegram"
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_telegram"
             android:icon="@drawable/ic_messag"
-            android:title="Telegram"/>
-        <item android:id="@+id/nab_about"
+            android:title="Telegram"
+            />
+        <item
+            android:id="@+id/nav_about"
             android:icon="@drawable/ic_about"
-            android:title="About Us"/>
-    </group>-->
-    <item android:title="">
-        <menu>
-            <item
-                android:id="@+id/nav_telegram"
-                android:icon="@drawable/ic_messag"
-                android:title="Telegram"
-                />
-            <item
-                android:id="@+id/nav_about"
-                android:icon="@drawable/ic_about"
-                android:title="Contact Developer" />
-        </menu>
-    </item>
-
+            android:title="Contact Developer" />
+    </group>
 </menu>

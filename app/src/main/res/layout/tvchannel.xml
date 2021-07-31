@@ -17,8 +17,7 @@
         android:textColor="@color/white"
         android:id="@+id/channelName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="bottom"
+        android:layout_height="55dp"
         android:maxLines="2"
         android:padding="10dp"
         android:textAlignment="center"/>
