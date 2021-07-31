@@ -62,6 +62,7 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
     private String currentVersion;
     private Double fCurrentVersion, fLatestVersion;
     private String key;
+    private String UpdateLink;
     ////////
 
     public static final String PREFS_NAME = "MyPrefsFile1";
@@ -103,6 +104,7 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
                     assert document != null;
                     if (document.exists()) {
                         fLatestVersion = document.getDouble("currentVersion");
+                        UpdateLink = document.getString("versionLink");
                         Log.d("version", "fLatestVersion: " + fLatestVersion);
                         currentVersion = BuildConfig.VERSION_NAME;
                         fCurrentVersion = Double.parseDouble(currentVersion);
@@ -132,7 +134,7 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
                 .setPositiveButton("OK", R.drawable.ic_baseline_system_update_24, new MaterialDialog.OnClickListener() {
                     @Override
                     public void onClick(dev.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
-                        Intent download = new Intent(Intent.ACTION_VIEW, Uri.parse("https://rebrand.ly/tdqfx8w"));
+                        Intent download = new Intent(Intent.ACTION_VIEW, Uri.parse(UpdateLink));
                         startActivity(download);
                     }
                 })
@@ -207,12 +209,12 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
                     @Override
                     protected void onBindViewHolder(@NonNull MainActivity.channelViewholder holder, final int position, @NonNull mainCategory model) {
 
-                        holder.channelcatagory.setText(model.getmcategory());
-                        channelcategory = model.getmcategory();
+                        holder.channelcatagory.setText(model.getmc());
+                        channelcategory = model.getmc();
                         holder.itemView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                String category = model.getmcategory();
+                                String category = model.getmc();
                                 if (category.equals("Live TV")) {
                                     Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
                                     profileIntent.putExtra("category", "categorys");
@@ -271,12 +273,12 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
                     @Override
                     protected void onBindViewHolder(@NonNull MainActivity.channelViewholder holder, final int position, @NonNull mainCategory model) {
 
-                        holder.channelcatagory.setText(model.getmcategory());
-                        channelcategory = model.getmcategory();
+                        holder.channelcatagory.setText(model.getmc());
+                        channelcategory = model.getmc();
                         holder.itemView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                String category = model.getmcategory();
+                                String category = model.getmc();
                                 if (category.equals("Live TV")) {
                                     Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
                                     profileIntent.putExtra("category", "categorys");
