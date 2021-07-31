@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "343000511591",
+    "project_id": "dora-tv-a86af",
+    "storage_bucket": "dora-tv-a86af.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:343000511591:android:39b587c292a0777706d0c2",
+        "android_client_info": {
+          "package_name": "com.crazybotstudio.doratv"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "343000511591-2fchgfddnva6f0qcdffp7vrditcth9ub.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCddNgPXYgbqar-XWLAXSKiNrMTOreG-1s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "343000511591-2fchgfddnva6f0qcdffp7vrditcth9ub.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
