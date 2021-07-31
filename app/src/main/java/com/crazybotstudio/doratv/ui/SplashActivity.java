@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.crazybotstudio.doratv.R;
+import com.startapp.sdk.ads.splash.SplashConfig;
+import com.startapp.sdk.adsbase.StartAppAd;
 
 import java.util.Objects;
 
@@ -23,6 +25,10 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         imageView = findViewById(R.id.imageView);
+        StartAppAd.showSplash(this, savedInstanceState, new SplashConfig()
+                .setTheme(SplashConfig.Theme.USER_DEFINED)
+                .setCustomScreen(R.layout.activity_splash)
+        );
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         Objects.requireNonNull(getSupportActionBar()).hide();
         new Handler().postDelayed(() -> {
