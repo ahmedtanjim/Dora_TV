@@ -25,10 +25,10 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         imageView = findViewById(R.id.imageView);
-        StartAppAd.showSplash(this, savedInstanceState, new SplashConfig()
-                .setTheme(SplashConfig.Theme.USER_DEFINED)
-                .setCustomScreen(R.layout.activity_splash)
-        );
+//        StartAppAd.showSplash(this, savedInstanceState, new SplashConfig()
+//                .setTheme(SplashConfig.Theme.USER_DEFINED)
+//                .setCustomScreen(R.layout.activity_splash)
+//        );
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         Objects.requireNonNull(getSupportActionBar()).hide();
         new Handler().postDelayed(() -> {

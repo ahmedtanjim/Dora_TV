@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -28,8 +29,12 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.startapp.sdk.adsbase.Ad;
 import com.startapp.sdk.adsbase.StartAppAd;
 import com.startapp.sdk.adsbase.StartAppSDK;
+import com.startapp.sdk.adsbase.adlisteners.AdDisplayListener;
+import com.startapp.sdk.adsbase.adlisteners.AdEventListener;
+import com.startapp.sdk.adsbase.adlisteners.VideoListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -74,6 +79,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         StartAppSDK.init(this, getString(R.string.start_app_id), false);
         StartAppAd.disableSplash();
     }
+
+
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
@@ -129,9 +137,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 profileIntent.putExtra("category", visit_user_id);
                                 startActivity(profileIntent);
                                 if (cat.equals("categorys")) {
-                                    StartAppAd startAppAd = new StartAppAd(getApplicationContext());
+                                    StartAppAd startAppAd = new StartAppAd(MainActivity.this);
                                     startAppAd.loadAd(StartAppAd.AdMode.AUTOMATIC);
-                                    startAppAd.showAd(getApplicationContext());
+                                    startAppAd.showAd(new AdDisplayListener() {
+                                        @Override
+                                        public void adHidden(Ad ad) {
+                                        }
+
+                                        @Override
+                                        public void adDisplayed(Ad ad) {
+                                        }
+
+                                        @Override
+                                        public void adClicked(Ad ad) {
+
+                                        }
+
+                                        @Override
+                                        public void adNotDisplayed(Ad ad) {
+                                        }
+                                    });
                                 }
                             }
 
