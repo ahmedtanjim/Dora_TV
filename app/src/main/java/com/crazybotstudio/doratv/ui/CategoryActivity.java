@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,13 +42,21 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.startapp.sdk.ads.splash.SplashConfig;
+import com.startapp.sdk.adsbase.Ad;
 import com.startapp.sdk.adsbase.AutoInterstitialPreferences;
 import com.startapp.sdk.adsbase.StartAppAd;
 import com.startapp.sdk.adsbase.StartAppSDK;
+import com.startapp.sdk.adsbase.adlisteners.AdDisplayListener;
+import com.startapp.sdk.adsbase.adlisteners.AdEventListener;
+import com.startapp.sdk.adsbase.adlisteners.VideoListener;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import dev.shreyaspatil.MaterialDialog.MaterialDialog;
 
@@ -72,6 +81,12 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
     protected void onCreate(Bundle savedInstanceState) {
         vpnControl.stopVpn(this);
         super.onCreate(savedInstanceState);
+        StartAppAd.showSplash(this, savedInstanceState, new SplashConfig()
+                .setTheme(SplashConfig.Theme.USER_DEFINED)
+                .setCustomScreen(R.layout.activity_splash)
+                .setMaxAdDisplayTime(SplashConfig.MaxAdDisplayTime.LONG)
+
+        );
         setContentView(R.layout.activity_category);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -91,7 +106,6 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
         GetLestVersion();
         StartAppSDK.init(this, getString(R.string.start_app_id), false);
         StartAppAd.disableSplash();
-
     }
 
     private void GetLestVersion() {
@@ -113,7 +127,7 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
                             if (fCurrentVersion < fLatestVersion) {
                                 UpdateAlertDialogue();
                             }
-                        }else{
+                        } else {
                             Toast.makeText(getApplicationContext(), "Something wrong", Toast.LENGTH_SHORT).show();
                         }
                     } else {
@@ -163,7 +177,7 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
             String urlPage = "https://www.facebook.com/Crazybot.studio";
 
             try {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(facebookId )));
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(facebookId)));
             } catch (Exception e) {
                 Log.e(TAG, "Application not intalled.");
                 //Open url web page.
@@ -215,27 +229,30 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
                             @Override
                             public void onClick(View view) {
                                 String category = model.getmc();
-                                if (category.equals("Live TV")) {
-                                    Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
-                                    profileIntent.putExtra("category", "categorys");
-                                    startActivity(profileIntent);
-                                    StartAppAd.showAd(getApplicationContext());
-                                } else if (category.equals("Movies")) {
-                                    Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
-                                    profileIntent.putExtra("category", "Movies");
-                                    startActivity(profileIntent);
-                                    StartAppAd.showAd(getApplicationContext());
-                                }else if (category.equals("Webseries")) {
-                                    Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
-                                    profileIntent.putExtra("category", "Webseries");
-                                    startActivity(profileIntent);
-                                    StartAppAd.showAd(getApplicationContext());
-                                }
-                                else {
-                                    Intent liveIntent = new Intent(CategoryActivity.this, channelActivity.class);
-                                    liveIntent.putExtra("category", category);
-                                    startActivity(liveIntent);
-                                    StartAppAd.showAd(getApplicationContext());
+                                switch (category) {
+                                    case "Live TV": {
+                                        Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
+                                        profileIntent.putExtra("category", "categorys");
+                                        startActivity(profileIntent);
+                                        break;
+                                    }
+                                    case "Movies": {
+                                        Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
+                                        profileIntent.putExtra("category", "Movies");
+                                        startActivity(profileIntent);
+                                        break;
+                                    }
+                                    case "Webseries": {
+                                        Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
+                                        profileIntent.putExtra("category", "Webseries");
+                                        startActivity(profileIntent);
+                                        break;
+                                    }
+                                    default:
+                                        Intent liveIntent = new Intent(CategoryActivity.this, channelActivity.class);
+                                        liveIntent.putExtra("category", category);
+                                        startActivity(liveIntent);
+                                        break;
                                 }
 
                             }
@@ -260,6 +277,29 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
 
     }
 
+    public void showRewardedVideo() {
+        final StartAppAd rewardedVideo = new StartAppAd(this);
+
+        rewardedVideo.setVideoListener(new VideoListener() {
+            @Override
+            public void onVideoCompleted() {
+                // Grant the reward to user
+            }
+        });
+
+        rewardedVideo.loadAd(StartAppAd.AdMode.REWARDED_VIDEO, new AdEventListener() {
+            @Override
+            public void onReceiveAd(Ad ad) {
+                rewardedVideo.showAd();
+            }
+
+            @Override
+            public void onFailedToReceiveAd(Ad ad) {
+                // Can't show rewarded video
+            }
+        });
+    }
+
     @Override
     protected void onStart() {
         vpnControl.stopVpn(this);
@@ -279,36 +319,32 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
                             @Override
                             public void onClick(View view) {
                                 String category = model.getmc();
-                                if (category.equals("Live TV")) {
-                                    Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
-                                    profileIntent.putExtra("category", "categorys");
-                                    startActivity(profileIntent);
-
-                                    StartAppAd.showAd(getApplicationContext());
-                                } else if (category.equals("Movies")) {
-                                    Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
-                                    profileIntent.putExtra("category", "Movies");
-                                    startActivity(profileIntent);
-
-                                    StartAppAd startAppAd = new StartAppAd(getApplicationContext());
-                                    startAppAd.loadAd(StartAppAd.AdMode.REWARDED_VIDEO);
-                                    startAppAd.showAd(getApplicationContext());
-                                } else if (category.equals("Webseries")) {
-                                    Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
-                                    profileIntent.putExtra("category", "Webseries");
-                                    startActivity(profileIntent);
-
-                                    StartAppAd startAppAd = new StartAppAd(getApplicationContext());
-                                    startAppAd.loadAd(StartAppAd.AdMode.REWARDED_VIDEO);
-                                    startAppAd.showAd(getApplicationContext());
-                                }
-                                else {
-                                    Intent liveIntent = new Intent(CategoryActivity.this, channelActivity.class);
-                                    liveIntent.putExtra("category", category);
-                                    startActivity(liveIntent);
-                                    StartAppAd startAppAd = new StartAppAd(getApplicationContext());
-                                    startAppAd.loadAd(StartAppAd.AdMode.REWARDED_VIDEO);
-                                    startAppAd.showAd(getApplicationContext());
+                                switch (category) {
+                                    case "Live TV": {
+                                        Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
+                                        profileIntent.putExtra("category", "categorys");
+                                        startActivity(profileIntent);
+                                        break;
+                                    }
+                                    case "Movies": {
+                                        Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
+                                        profileIntent.putExtra("category", "Movies");
+                                        startActivity(profileIntent);
+                                        showRewardedVideo();
+                                        break;
+                                    }
+                                    case "Webseries": {
+                                        Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
+                                        profileIntent.putExtra("category", "Webseries");
+                                        startActivity(profileIntent);
+                                        showRewardedVideo();
+                                        break;
+                                    }
+                                    default:
+                                        Intent liveIntent = new Intent(CategoryActivity.this, channelActivity.class);
+                                        liveIntent.putExtra("category", category);
+                                        startActivity(liveIntent);
+                                        break;
                                 }
 
                             }
@@ -402,8 +438,8 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
 
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
     }
 
     @Override

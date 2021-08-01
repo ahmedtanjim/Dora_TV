@@ -2,6 +2,7 @@ package com.crazybotstudio.doratv.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,8 +31,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.startapp.sdk.adsbase.Ad;
 import com.startapp.sdk.adsbase.StartAppAd;
 import com.startapp.sdk.adsbase.StartAppSDK;
+import com.startapp.sdk.adsbase.adlisteners.AdDisplayListener;
+import com.startapp.sdk.adsbase.adlisteners.AdEventListener;
+import com.startapp.sdk.adsbase.adlisteners.VideoListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -139,9 +144,7 @@ public class channelActivity extends AppCompatActivity {
                                     Intent profileIntent = new Intent(channelActivity.this, subChannelActivity.class);
                                     profileIntent.putExtra("channelName", channelName);
                                     startActivity(profileIntent);
-                                    /*StartAppAd startAppAd = new StartAppAd(getApplicationContext());
-                                    startAppAd.loadAd(StartAppAd.AdMode.AUTOMATIC);
-                                    startAppAd.showAd(getApplicationContext());*/
+
                                 } else {
 //                                    Intent profileIntent = new Intent(channelActivity.this, WebActivity.class);
 //                                    profileIntent.putExtra("link", channelLink);
@@ -213,9 +216,28 @@ public class channelActivity extends AppCompatActivity {
                                     Intent profileIntent = new Intent(channelActivity.this, subChannelActivity.class);
                                     profileIntent.putExtra("channelName", channelName);
                                     startActivity(profileIntent);
-                                    /*StartAppAd startAppAd = new StartAppAd(getApplicationContext());
-                                    startAppAd.loadAd(StartAppAd.AdMode.AUTOMATIC);
-                                    startAppAd.showAd(getApplicationContext());*/
+                                    if (category.equals("Live Events")){
+                                        StartAppAd startAppAd = new StartAppAd(channelActivity.this);
+                                        startAppAd.loadAd(StartAppAd.AdMode.AUTOMATIC);
+                                        startAppAd.showAd(new AdDisplayListener() {
+                                            @Override
+                                            public void adHidden(Ad ad) {
+                                            }
+
+                                            @Override
+                                            public void adDisplayed(Ad ad) {
+                                            }
+
+                                            @Override
+                                            public void adClicked(Ad ad) {
+
+                                            }
+
+                                            @Override
+                                            public void adNotDisplayed(Ad ad) {
+                                            }
+                                        });
+                                    }
                                 } else {
 //                                    Intent profileIntent = new Intent(channelActivity.this, WebActivity.class);
 //                                    profileIntent.putExtra("link", channelLink);
@@ -225,6 +247,28 @@ public class channelActivity extends AppCompatActivity {
                                     profileIntent.putExtra("url_media_item", channelLink);
                                     profileIntent.putExtra("channelName", channelName);
                                     startActivity(profileIntent);
+                                    if (category.equals("Live Events")){
+                                        StartAppAd startAppAd = new StartAppAd(channelActivity.this);
+                                        startAppAd.loadAd(StartAppAd.AdMode.AUTOMATIC);
+                                        startAppAd.showAd(new AdDisplayListener() {
+                                            @Override
+                                            public void adHidden(Ad ad) {
+                                            }
+
+                                            @Override
+                                            public void adDisplayed(Ad ad) {
+                                            }
+
+                                            @Override
+                                            public void adClicked(Ad ad) {
+
+                                            }
+
+                                            @Override
+                                            public void adNotDisplayed(Ad ad) {
+                                            }
+                                        });
+                                    }
                                 }
                             }
                         });
@@ -261,7 +305,6 @@ public class channelActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
     }
 
     @Override
