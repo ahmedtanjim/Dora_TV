@@ -2,12 +2,15 @@ package com.crazybotstudio.doratv.ui;
 
 import static android.content.ContentValues.TAG;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -85,6 +88,7 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
                 .setTheme(SplashConfig.Theme.USER_DEFINED)
                 .setCustomScreen(R.layout.activity_splash)
                 .setMaxAdDisplayTime(SplashConfig.MaxAdDisplayTime.LONG)
+                .setOrientation(SplashConfig.Orientation.AUTO)
 
         );
         setContentView(R.layout.activity_category);
@@ -106,7 +110,15 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
         GetLestVersion();
         StartAppSDK.init(this, getString(R.string.start_app_id), false);
         StartAppAd.disableSplash();
+        StartAppSDK.setUserConsent (this,
+                "pas",
+                System.currentTimeMillis(),
+                false);
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+
     }
+
+
 
     private void GetLestVersion() {
         documentReference = db.collection("version").document("4QG3zqr59kf6aaIWOfxi");

@@ -78,6 +78,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         StartAppSDK.init(this, getString(R.string.start_app_id), false);
         StartAppAd.disableSplash();
+        StartAppSDK.setUserConsent (this,
+                "pas",
+                System.currentTimeMillis(),
+                false);
     }
 
 
@@ -193,8 +197,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         vpnControl.stopVpn(this);
         super.onDestroy();
-        finish();
-
     }
 
     @Override

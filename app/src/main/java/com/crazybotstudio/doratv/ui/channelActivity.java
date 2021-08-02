@@ -91,6 +91,10 @@ public class channelActivity extends AppCompatActivity {
         });
         StartAppSDK.init(this, getString(R.string.start_app_id), false);
         StartAppAd.disableSplash();
+        StartAppSDK.setUserConsent (this,
+                "pas",
+                System.currentTimeMillis(),
+                false);
     }
 
     @Override
