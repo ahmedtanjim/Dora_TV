@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -29,8 +30,7 @@
         <activity
             android:name=".ui.CategoryActivity"
             android:theme="@style/Theme.DoraTV.NoActionBar"
-            android:exported="true"
-            android:screenOrientation="fullSensor">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
