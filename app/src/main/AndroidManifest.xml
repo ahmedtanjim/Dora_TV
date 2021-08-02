@@ -29,7 +29,8 @@
         <activity
             android:name=".ui.CategoryActivity"
             android:theme="@style/Theme.DoraTV.NoActionBar"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -51,7 +52,8 @@
         <activity
             android:name=".ui.MainActivity"
             android:hardwareAccelerated="true"
-            android:theme="@style/Theme.DoraTV.NoActionBar" />
+            android:theme="@style/Theme.DoraTV.NoActionBar"
+            android:screenOrientation="user"/>
         <meta-data
             android:name="com.startapp.sdk.APPLICATION_ID"
             android:value= "206452098" />

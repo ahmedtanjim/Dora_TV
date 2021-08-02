@@ -85,6 +85,7 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
                 .setTheme(SplashConfig.Theme.USER_DEFINED)
                 .setCustomScreen(R.layout.activity_splash)
                 .setMaxAdDisplayTime(SplashConfig.MaxAdDisplayTime.LONG)
+                .setOrientation(SplashConfig.Orientation.AUTO)
 
         );
         setContentView(R.layout.activity_category);
@@ -106,6 +107,10 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
         GetLestVersion();
         StartAppSDK.init(this, getString(R.string.start_app_id), false);
         StartAppAd.disableSplash();
+        StartAppSDK.setUserConsent (this,
+                "pas",
+                System.currentTimeMillis(),
+                false);
     }
 
     private void GetLestVersion() {
