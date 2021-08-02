@@ -54,7 +54,7 @@
             android:theme="@style/Theme.DoraTV.NoActionBar" />
         <meta-data
             android:name="com.startapp.sdk.APPLICATION_ID"
-            android:value="206454256" />
+            android:value= "206452098" />
 
 
     </application>
