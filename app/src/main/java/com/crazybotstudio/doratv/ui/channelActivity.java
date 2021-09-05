@@ -143,7 +143,6 @@ public class channelActivity extends AppCompatActivity {
                                 channelLink = model.getChannellink();
                                 multi = model.getMulti();
                                 type = model.getType();
-                                Log.d("TAG", "The interstitial ad wasn't ready yet.");
                                 if (multi.equals("y")) {
                                     Intent profileIntent = new Intent(channelActivity.this, subChannelActivity.class);
                                     profileIntent.putExtra("channelName", channelName);

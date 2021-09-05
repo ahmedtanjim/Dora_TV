@@ -143,24 +143,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 if (cat.equals("categorys")) {
                                     StartAppAd startAppAd = new StartAppAd(MainActivity.this);
                                     startAppAd.loadAd(StartAppAd.AdMode.AUTOMATIC);
-                                    startAppAd.showAd(new AdDisplayListener() {
-                                        @Override
-                                        public void adHidden(Ad ad) {
-                                        }
-
-                                        @Override
-                                        public void adDisplayed(Ad ad) {
-                                        }
-
-                                        @Override
-                                        public void adClicked(Ad ad) {
-
-                                        }
-
-                                        @Override
-                                        public void adNotDisplayed(Ad ad) {
-                                        }
-                                    });
+                                    startAppAd.showAd();
+                                }else{
+                                    StartAppAd startAppAd = new StartAppAd(MainActivity.this);
+                                    startAppAd.loadAd(StartAppAd.AdMode.AUTOMATIC);
+                                    startAppAd.showAd();
                                 }
                             }
 

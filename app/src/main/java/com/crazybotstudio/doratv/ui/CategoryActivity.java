@@ -2,15 +2,12 @@ package com.crazybotstudio.doratv.ui;
 
 import static android.content.ContentValues.TAG;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.provider.Settings;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,37 +31,38 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.crazybotstudio.doratv.BuildConfig;
 import com.crazybotstudio.doratv.R;
+import com.crazybotstudio.doratv.adapter.CategoryAdapter;
 import com.crazybotstudio.doratv.models.mainCategory;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.startapp.sdk.ads.splash.SplashConfig;
 import com.startapp.sdk.adsbase.Ad;
-import com.startapp.sdk.adsbase.AutoInterstitialPreferences;
 import com.startapp.sdk.adsbase.StartAppAd;
 import com.startapp.sdk.adsbase.StartAppSDK;
-import com.startapp.sdk.adsbase.adlisteners.AdDisplayListener;
 import com.startapp.sdk.adsbase.adlisteners.AdEventListener;
 import com.startapp.sdk.adsbase.adlisteners.VideoListener;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import dev.shreyaspatil.MaterialDialog.MaterialDialog;
 
 public class CategoryActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference mainCategoryRef = db.collection("MainCategory");
+    private CategoryAdapter adapter;
     private DrawerLayout drawerLayout;
     private FirebaseDatabase database;
     private DatabaseReference reference;
@@ -98,8 +96,7 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
         database = FirebaseDatabase.getInstance();
         reference = FirebaseDatabase.getInstance().getReference("maincategorys");
         recyclerView = this.findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        setUpRecyclerView();
         drawerLayout = findViewById(R.id.draw_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -110,14 +107,62 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
         GetLestVersion();
         StartAppSDK.init(this, getString(R.string.start_app_id), false);
         StartAppAd.disableSplash();
-        StartAppSDK.setUserConsent (this,
+        StartAppSDK.setUserConsent(this,
                 "pas",
                 System.currentTimeMillis(),
                 false);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+        adapter.setOnItemClickListener(new CategoryAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(String category) {
+                switch (category){
+                    case "Live Tv": {
+                        Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
+                        profileIntent.putExtra("category", "categorys");
+                        startActivity(profileIntent);
+                        break;
+                    }
+                    case "Movies": {
+                        Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
+                        profileIntent.putExtra("category", "Movies");
+                        startActivity(profileIntent);
+                        break;
+                    }
+                    case "Web Series": {
+                        Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
+                        profileIntent.putExtra("category", "Webseries");
+                        startActivity(profileIntent);
+                        break;
+                    }
+                    case "Live Events": {
+                        Intent profileIntent = new Intent(CategoryActivity.this, LiveEventActivity.class);
+                        profileIntent.putExtra("category", category);
+                        startActivity(profileIntent);
+                        break;
+                    }
+                    default:
+                        Intent liveIntent = new Intent(CategoryActivity.this, channelActivity.class);
+                        liveIntent.putExtra("category", category);
+                        startActivity(liveIntent);
+                        break;
+                }
+            }
+        });
 
     }
 
+    private void setUpRecyclerView() {
+        Query query = mainCategoryRef.orderBy("mc");
+        FirestoreRecyclerOptions<mainCategory> options = new FirestoreRecyclerOptions.Builder<mainCategory>()
+                .setQuery(query, mainCategory.class)
+                .build();
+        adapter = new CategoryAdapter(options);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setItemAnimator(null);
+        recyclerView.setAdapter(adapter);
+
+    }
 
 
     private void GetLestVersion() {
@@ -179,6 +224,7 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
 
     @Override
     public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
+
         vpnControl.stopVpn(this);
 
         if (item.getItemId() == R.id.nav_telegram) {
@@ -210,83 +256,17 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                ProcessSearch(query);
+//                ProcessSearch(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                ProcessSearch(newText);
+//                ProcessSearch(newText);
                 return false;
             }
         });
         return true;
-    }
-
-    private void ProcessSearch(String newText) {
-        vpnControl.stopVpn(this);
-        FirebaseRecyclerOptions<mainCategory> options1 =
-                new FirebaseRecyclerOptions.Builder<mainCategory>()
-                        .setQuery(reference.orderByChild("search").startAt(newText).endAt(newText + "\uf8ff"), mainCategory.class)
-                        .build();
-
-        FirebaseRecyclerAdapter<mainCategory, MainActivity.channelViewholder> adapter =
-                new FirebaseRecyclerAdapter<mainCategory, MainActivity.channelViewholder>(options1) {
-                    @Override
-                    protected void onBindViewHolder(@NonNull MainActivity.channelViewholder holder, final int position, @NonNull mainCategory model) {
-
-                        holder.channelcatagory.setText(model.getmc());
-                        channelcategory = model.getmc();
-                        holder.itemView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                String category = model.getmc();
-                                switch (category) {
-                                    case "Live TV": {
-                                        Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
-                                        profileIntent.putExtra("category", "categorys");
-                                        startActivity(profileIntent);
-                                        break;
-                                    }
-                                    case "Movies": {
-                                        Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
-                                        profileIntent.putExtra("category", "Movies");
-                                        startActivity(profileIntent);
-                                        break;
-                                    }
-                                    case "Webseries": {
-                                        Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
-                                        profileIntent.putExtra("category", "Webseries");
-                                        startActivity(profileIntent);
-                                        break;
-                                    }
-                                    default:
-                                        Intent liveIntent = new Intent(CategoryActivity.this, channelActivity.class);
-                                        liveIntent.putExtra("category", category);
-                                        startActivity(liveIntent);
-                                        break;
-                                }
-
-                            }
-
-                        });
-                    }
-
-                    @NonNull
-                    @Override
-                    public MainActivity.channelViewholder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-                        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.tvlayout, viewGroup, false);
-                        MainActivity.channelViewholder viewHolder = new MainActivity.channelViewholder(view);
-                        return viewHolder;
-                    }
-
-                };
-
-        recyclerView.setAdapter(adapter);
-
-        adapter.startListening();
-
-
     }
 
     public void showRewardedVideo() {
@@ -314,9 +294,10 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
 
     @Override
     protected void onStart() {
-        vpnControl.stopVpn(this);
         super.onStart();
-        FirebaseRecyclerOptions<mainCategory> options =
+        vpnControl.stopVpn(this);
+        adapter.startListening();
+        /*FirebaseRecyclerOptions<mainCategory> options =
                 new FirebaseRecyclerOptions.Builder<mainCategory>()
                         .setQuery(reference, mainCategory.class)
                         .build();
@@ -376,7 +357,7 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
 
         recyclerView.setAdapter(adapter);
 
-        adapter.startListening();
+        adapter.startListening();*/
     }
 
 
@@ -457,5 +438,6 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
     @Override
     protected void onStop() {
         super.onStop();
+        adapter.stopListening();
     }
 }

@@ -6,37 +6,43 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
+        android:name=".ApplicationClass"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name=".ApplicationClass"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DoraTV"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".ui.ExitActivity"
-            android:autoRemoveFromRecents="true"
-            android:theme="@android:style/Theme.NoDisplay"/>
-        <activity android:name=".ui.SplashActivity"
-            android:exported="true">
-
-        </activity>
-        <activity android:name=".ui.subChannelActivity"
+        <activity
+            android:name=".ui.LiveEventActivity"
+            android:exported="true"
             android:theme="@style/Theme.DoraTV.NoActionBar"/>
         <activity
+            android:name=".ui.ExitActivity"
+            android:autoRemoveFromRecents="true"
+            android:theme="@android:style/Theme.NoDisplay" />
+        <activity
+            android:name=".ui.SplashActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.subChannelActivity"
+            android:theme="@style/Theme.DoraTV.NoActionBar" />
+        <activity
             android:name=".ui.CategoryActivity"
-            android:theme="@style/Theme.DoraTV.NoActionBar"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.DoraTV.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
@@ -52,13 +58,12 @@
         <activity
             android:name=".ui.MainActivity"
             android:hardwareAccelerated="true"
-            android:theme="@style/Theme.DoraTV.NoActionBar"
-            android:screenOrientation="user"/>
+            android:screenOrientation="user"
+            android:theme="@style/Theme.DoraTV.NoActionBar" />
+
         <meta-data
             android:name="com.startapp.sdk.APPLICATION_ID"
-            android:value= "206452098" />
-
-
+            android:value="206452098" />
     </application>
 
 </manifest>
