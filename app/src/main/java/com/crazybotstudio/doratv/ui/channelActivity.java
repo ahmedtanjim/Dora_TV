@@ -2,7 +2,6 @@ package com.crazybotstudio.doratv.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.crazybotstudio.doratv.R;
 import com.crazybotstudio.doratv.models.channel;
+import com.crazybotstudio.doratv.player.PlayerActivity;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DataSnapshot;
@@ -35,8 +35,6 @@ import com.startapp.sdk.adsbase.Ad;
 import com.startapp.sdk.adsbase.StartAppAd;
 import com.startapp.sdk.adsbase.StartAppSDK;
 import com.startapp.sdk.adsbase.adlisteners.AdDisplayListener;
-import com.startapp.sdk.adsbase.adlisteners.AdEventListener;
-import com.startapp.sdk.adsbase.adlisteners.VideoListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -91,7 +89,7 @@ public class channelActivity extends AppCompatActivity {
         });
         StartAppSDK.init(this, getString(R.string.start_app_id), false);
         StartAppAd.disableSplash();
-        StartAppSDK.setUserConsent (this,
+        StartAppSDK.setUserConsent(this,
                 "pas",
                 System.currentTimeMillis(),
                 false);
@@ -154,13 +152,12 @@ public class channelActivity extends AppCompatActivity {
 //                                    profileIntent.putExtra("type", type);
 //                                    profileIntent.putExtra("channelName", channelName);
 //                                    startActivity(profileIntent);
-
                                     Intent profileIntent = new Intent(channelActivity.this, PlayerActivity.class);
                                     profileIntent.putExtra("channelName", channelName);
                                     profileIntent.putExtra("url_media_item", channelLink);
                                     startActivity(profileIntent);
                                 }
-
+//
 
                             }
                         });
@@ -219,28 +216,27 @@ public class channelActivity extends AppCompatActivity {
                                     Intent profileIntent = new Intent(channelActivity.this, subChannelActivity.class);
                                     profileIntent.putExtra("channelName", channelName);
                                     startActivity(profileIntent);
-                                    if (category.equals("Live Events")){
-                                        StartAppAd startAppAd = new StartAppAd(channelActivity.this);
-                                        startAppAd.loadAd(StartAppAd.AdMode.AUTOMATIC);
-                                        startAppAd.showAd(new AdDisplayListener() {
-                                            @Override
-                                            public void adHidden(Ad ad) {
-                                            }
+                                    StartAppAd startAppAd = new StartAppAd(channelActivity.this);
+                                    startAppAd.loadAd(StartAppAd.AdMode.AUTOMATIC);
+                                    startAppAd.showAd(new AdDisplayListener() {
+                                        @Override
+                                        public void adHidden(Ad ad) {
+                                        }
 
-                                            @Override
-                                            public void adDisplayed(Ad ad) {
-                                            }
+                                        @Override
+                                        public void adDisplayed(Ad ad) {
+                                        }
 
-                                            @Override
-                                            public void adClicked(Ad ad) {
+                                        @Override
+                                        public void adClicked(Ad ad) {
 
-                                            }
+                                        }
 
-                                            @Override
-                                            public void adNotDisplayed(Ad ad) {
-                                            }
-                                        });
-                                    }
+                                        @Override
+                                        public void adNotDisplayed(Ad ad) {
+                                        }
+                                    });
+
                                 } else {
 //                                    Intent profileIntent = new Intent(channelActivity.this, WebActivity.class);
 //                                    profileIntent.putExtra("link", channelLink);
@@ -250,28 +246,26 @@ public class channelActivity extends AppCompatActivity {
                                     profileIntent.putExtra("url_media_item", channelLink);
                                     profileIntent.putExtra("channelName", channelName);
                                     startActivity(profileIntent);
-                                    if (category.equals("Live Events")){
-                                        StartAppAd startAppAd = new StartAppAd(channelActivity.this);
-                                        startAppAd.loadAd(StartAppAd.AdMode.AUTOMATIC);
-                                        startAppAd.showAd(new AdDisplayListener() {
-                                            @Override
-                                            public void adHidden(Ad ad) {
-                                            }
+                                    StartAppAd startAppAd = new StartAppAd(channelActivity.this);
+                                    startAppAd.loadAd(StartAppAd.AdMode.AUTOMATIC);
+                                    startAppAd.showAd(new AdDisplayListener() {
+                                        @Override
+                                        public void adHidden(Ad ad) {
+                                        }
 
-                                            @Override
-                                            public void adDisplayed(Ad ad) {
-                                            }
+                                        @Override
+                                        public void adDisplayed(Ad ad) {
+                                        }
 
-                                            @Override
-                                            public void adClicked(Ad ad) {
+                                        @Override
+                                        public void adClicked(Ad ad) {
 
-                                            }
+                                        }
 
-                                            @Override
-                                            public void adNotDisplayed(Ad ad) {
-                                            }
-                                        });
-                                    }
+                                        @Override
+                                        public void adNotDisplayed(Ad ad) {
+                                        }
+                                    });
                                 }
                             }
                         });

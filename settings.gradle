@@ -1,2 +1,5 @@
 rootProject.name = "Dora TV"
 include ':app'
+gradle.ext.exoplayerRoot = '/home/tanjim/Downloads/new/ExoPlayer-release-v2'
+gradle.ext.exoplayerModulePrefix = 'exoplayer-'
+apply from: file("$gradle.ext.exoplayerRoot/core_settings.gradle")

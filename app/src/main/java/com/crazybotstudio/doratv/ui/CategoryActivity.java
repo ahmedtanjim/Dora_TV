@@ -50,6 +50,7 @@ import com.startapp.sdk.ads.splash.SplashConfig;
 import com.startapp.sdk.adsbase.Ad;
 import com.startapp.sdk.adsbase.StartAppAd;
 import com.startapp.sdk.adsbase.StartAppSDK;
+import com.startapp.sdk.adsbase.adlisteners.AdDisplayListener;
 import com.startapp.sdk.adsbase.adlisteners.AdEventListener;
 import com.startapp.sdk.adsbase.adlisteners.VideoListener;
 
@@ -82,10 +83,16 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
     protected void onCreate(Bundle savedInstanceState) {
         vpnControl.stopVpn(this);
         super.onCreate(savedInstanceState);
+        StartAppSDK.init(this, getString(R.string.start_app_id), false);
+        StartAppAd.disableSplash();
+        StartAppSDK.setUserConsent (this,
+                "pas",
+                System.currentTimeMillis(),
+                false);
         StartAppAd.showSplash(this, savedInstanceState, new SplashConfig()
                 .setTheme(SplashConfig.Theme.USER_DEFINED)
                 .setCustomScreen(R.layout.activity_splash)
-                .setMaxAdDisplayTime(SplashConfig.MaxAdDisplayTime.LONG)
+                .setMaxAdDisplayTime(SplashConfig.MaxAdDisplayTime.SHORT)
                 .setOrientation(SplashConfig.Orientation.AUTO)
 
         );
@@ -115,44 +122,35 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
         adapter.setOnItemClickListener(new CategoryAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(String category) {
-                switch (category){
-                    case "Live Tv": {
-                        Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
-                        profileIntent.putExtra("category", "categorys");
-                        startActivity(profileIntent);
-                        break;
+                Intent liveIntent = new Intent(CategoryActivity.this, channelActivity.class);
+                liveIntent.putExtra("category", category);
+                startActivity(liveIntent);
+                StartAppAd startAppAd = new StartAppAd(CategoryActivity.this);
+                startAppAd.loadAd(StartAppAd.AdMode.AUTOMATIC);
+                startAppAd.showAd(new AdDisplayListener() {
+                    @Override
+                    public void adHidden(Ad ad) {
                     }
-                    case "Movies": {
-                        Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
-                        profileIntent.putExtra("category", "Movies");
-                        startActivity(profileIntent);
-                        break;
+
+                    @Override
+                    public void adDisplayed(Ad ad) {
                     }
-                    case "Web Series": {
-                        Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
-                        profileIntent.putExtra("category", "Webseries");
-                        startActivity(profileIntent);
-                        break;
+
+                    @Override
+                    public void adClicked(Ad ad) {
+
                     }
-                    case "Live Events": {
-                        Intent profileIntent = new Intent(CategoryActivity.this, LiveEventActivity.class);
-                        profileIntent.putExtra("category", category);
-                        startActivity(profileIntent);
-                        break;
+
+                    @Override
+                    public void adNotDisplayed(Ad ad) {
                     }
-                    default:
-                        Intent liveIntent = new Intent(CategoryActivity.this, channelActivity.class);
-                        liveIntent.putExtra("category", category);
-                        startActivity(liveIntent);
-                        break;
-                }
+                });
             }
         });
-
     }
 
     private void setUpRecyclerView() {
-        Query query = mainCategoryRef.orderBy("mc");
+        Query query = mainCategoryRef.orderBy("priority", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<mainCategory> options = new FirestoreRecyclerOptions.Builder<mainCategory>()
                 .setQuery(query, mainCategory.class)
                 .build();
@@ -172,7 +170,6 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    assert document != null;
                     if (document.exists()) {
                         fLatestVersion = document.getDouble("currentVersion");
                         UpdateLink = document.getString("versionLink");
@@ -373,61 +370,9 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
     @Override
     protected void onResume() {
         vpnControl.stopVpn(this);
-        AlertDialog.Builder adb = new AlertDialog.Builder(this);
-        LayoutInflater adbInflater = LayoutInflater.from(this);
-        View eulaLayout = adbInflater.inflate(R.layout.checkbox, null);
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        String skipMessage = settings.getString("skipMessage", "NOT checked");
-
-        dontShowAgain = (CheckBox) eulaLayout.findViewById(R.id.skip);
-        adb.setView(eulaLayout);
-        adb.setTitle("CopyRight Policy");
-        adb.setMessage(Html.fromHtml("All Links and Streams are available Free in Internet. We just arranged in one platform to use people enjoy with Live! Please Write an Email to us if you had any complaints Thank you. Email:doratv.app@gmail.com"));
-
-        adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                String checkBoxResult = "NOT checked";
-
-                if (dontShowAgain.isChecked()) {
-                    checkBoxResult = "checked";
-                }
-
-                SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-                SharedPreferences.Editor editor = settings.edit();
-
-                editor.putString("skipMessage", checkBoxResult);
-                editor.apply();
-
-                // Do what you want to do on "OK" action
-
-                return;
-            }
-        });
-
-        adb.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                String checkBoxResult = "NOT checked";
-
-                if (dontShowAgain.isChecked()) {
-                    checkBoxResult = "checked";
-                }
-
-                SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-                SharedPreferences.Editor editor = settings.edit();
-
-                editor.putString("skipMessage", checkBoxResult);
-                editor.commit();
-
-                return;
-            }
-        });
-
-        if (!skipMessage.equals("checked")) {
-            adb.show();
-        }
-
         super.onResume();
     }
+    // wait ami bujte parsi ki problem sure hoye nei
 
 
     @Override

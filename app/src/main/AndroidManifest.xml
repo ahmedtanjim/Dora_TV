@@ -21,7 +21,11 @@
         <activity
             android:name=".ui.LiveEventActivity"
             android:exported="true"
-            android:theme="@style/Theme.DoraTV.NoActionBar"/>
+            android:theme="@style/Theme.DoraTV.NoActionBar" />
+        <activity
+            android:name=".player.PlayerActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/webAct" />
         <activity
             android:name=".ui.ExitActivity"
             android:autoRemoveFromRecents="true"

@@ -1,4 +1,6 @@
-<resources>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation" >
     <string name="app_name">Dora TV</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -32,4 +34,17 @@
     <string name="livetv">Live TV</string>
     <string name="start_app_id">206452098</string>
 
+    <string name="storage_permission_denied">Storage Permission Denied</string>
+    <string name="unexpected_intent_action">unexpected_intent_action</string>
+    <string name="error_cleartext_not_permitted">error_cleartext_not_permitted</string>
+    <string name="error_drm_unsupported_before_api_18">error_drm_unsupported_before_api</string>
+    <string name="error_drm_unsupported_scheme">error_drm_unsupported_scheme</string>
+    <string name="error_unsupported_video">error_unsupported_video</string>
+    <string name="error_unsupported_audio">error_unsupported_audio</string>
+    <string name="error_generic">error_generic</string>
+    <string name="error_querying_decoders">error_querying_decoders</string>
+    <string name="error_no_secure_decoder">error_no_secure_decoder</string>
+    <string name="error_no_decoder">error_no_decoder</string>
+    <string name="error_instantiating_decoder">error_instantiating_decoder</string>
+    <string name="track_selection_title">Select Track</string>
 </resources>

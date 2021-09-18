@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.crazybotstudio.doratv.R;
+import com.crazybotstudio.doratv.player.PlayerActivity;
 import com.startapp.sdk.ads.splash.SplashConfig;
 import com.startapp.sdk.adsbase.StartAppAd;
 

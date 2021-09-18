@@ -5,6 +5,7 @@
     <style name="Theme.DoraTV.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">false</item>
         <item name="android:statusBarColor">@color/purple_200</item>
     </style>
 
