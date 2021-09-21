@@ -91,7 +91,7 @@ public class channelActivity extends AppCompatActivity {
         });
         StartAppSDK.init(this, getString(R.string.start_app_id), false);
         StartAppAd.disableSplash();
-        StartAppSDK.setUserConsent (this,
+        StartAppSDK.setUserConsent(this,
                 "pas",
                 System.currentTimeMillis(),
                 false);
@@ -214,55 +214,53 @@ public class channelActivity extends AppCompatActivity {
                                     Intent profileIntent = new Intent(channelActivity.this, subChannelActivity.class);
                                     profileIntent.putExtra("channelName", channelName);
                                     startActivity(profileIntent);
-                                    if (category.equals("Live Events")){
-                                        StartAppAd startAppAd = new StartAppAd(channelActivity.this);
-                                        startAppAd.loadAd(StartAppAd.AdMode.AUTOMATIC);
-                                        startAppAd.showAd(new AdDisplayListener() {
-                                            @Override
-                                            public void adHidden(Ad ad) {
-                                            }
+                                    StartAppAd startAppAd = new StartAppAd(channelActivity.this);
+                                    startAppAd.loadAd(StartAppAd.AdMode.AUTOMATIC);
+                                    startAppAd.showAd(new AdDisplayListener() {
+                                        @Override
+                                        public void adHidden(Ad ad) {
+                                        }
 
-                                            @Override
-                                            public void adDisplayed(Ad ad) {
-                                            }
+                                        @Override
+                                        public void adDisplayed(Ad ad) {
+                                        }
 
-                                            @Override
-                                            public void adClicked(Ad ad) {
+                                        @Override
+                                        public void adClicked(Ad ad) {
 
-                                            }
+                                        }
 
-                                            @Override
-                                            public void adNotDisplayed(Ad ad) {
-                                            }
-                                        });
-                                    }
+                                        @Override
+                                        public void adNotDisplayed(Ad ad) {
+                                        }
+                                    });
+
                                 } else {
                                     Intent profileIntent = new Intent(channelActivity.this, WebActivity.class);
                                     profileIntent.putExtra("link", channelLink);
                                     profileIntent.putExtra("type", type);
                                     startActivity(profileIntent);
-                                    if (category.equals("Live Events")){
-                                        StartAppAd startAppAd = new StartAppAd(channelActivity.this);
-                                        startAppAd.loadAd(StartAppAd.AdMode.AUTOMATIC);
-                                        startAppAd.showAd(new AdDisplayListener() {
-                                            @Override
-                                            public void adHidden(Ad ad) {
-                                            }
+                                    StartAppAd startAppAd = new StartAppAd(channelActivity.this);
+                                    startAppAd.loadAd(StartAppAd.AdMode.AUTOMATIC);
+                                    startAppAd.showAd(new AdDisplayListener() {
+                                        @Override
+                                        public void adHidden(Ad ad) {
+                                        }
 
-                                            @Override
-                                            public void adDisplayed(Ad ad) {
-                                            }
+                                        @Override
+                                        public void adDisplayed(Ad ad) {
+                                        }
 
-                                            @Override
-                                            public void adClicked(Ad ad) {
+                                        @Override
+                                        public void adClicked(Ad ad) {
 
-                                            }
+                                        }
 
-                                            @Override
-                                            public void adNotDisplayed(Ad ad) {
-                                            }
-                                        });
-                                    }
+                                        @Override
+                                        public void adNotDisplayed(Ad ad) {
+                                        }
+                                    });
+
                                 }
 
 

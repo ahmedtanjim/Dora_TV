@@ -2,25 +2,17 @@ package com.crazybotstudio.doratv.ui;
 
 import static android.content.ContentValues.TAG;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -32,16 +24,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.crazybotstudio.doratv.BuildConfig;
 import com.crazybotstudio.doratv.R;
 import com.crazybotstudio.doratv.adapter.CategoryAdapter;
-import com.crazybotstudio.doratv.models.mainCategory;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.crazybotstudio.doratv.api.MyApi;
+import com.crazybotstudio.doratv.models.MainCategory;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -50,42 +38,49 @@ import com.startapp.sdk.ads.splash.SplashConfig;
 import com.startapp.sdk.adsbase.Ad;
 import com.startapp.sdk.adsbase.StartAppAd;
 import com.startapp.sdk.adsbase.StartAppSDK;
+import com.startapp.sdk.adsbase.adlisteners.AdDisplayListener;
 import com.startapp.sdk.adsbase.adlisteners.AdEventListener;
 import com.startapp.sdk.adsbase.adlisteners.VideoListener;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import dev.shreyaspatil.MaterialDialog.MaterialDialog;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CategoryActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference mainCategoryRef = db.collection("MainCategory");
+    private static final String BASE_URL = "https://doratv1.000webhostapp.com/api/";
     private CategoryAdapter adapter;
     private DrawerLayout drawerLayout;
-    private FirebaseDatabase database;
-    private DatabaseReference reference;
     private DocumentReference documentReference;
     private RecyclerView recyclerView;
-    private String channelcategory;
     private String currentVersion;
     private Double fCurrentVersion, fLatestVersion;
-    private String key;
     private String UpdateLink;
-    ////////
-
-    public static final String PREFS_NAME = "MyPrefsFile1";
-    public CheckBox dontShowAgain;
+    private List<MainCategory> categoryArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         vpnControl.stopVpn(this);
         super.onCreate(savedInstanceState);
+        StartAppSDK.init(this, getString(R.string.start_app_id), false);
+        StartAppAd.disableSplash();
+        StartAppSDK.setUserConsent (this,
+                "pas",
+                System.currentTimeMillis(),
+                false);
         StartAppAd.showSplash(this, savedInstanceState, new SplashConfig()
                 .setTheme(SplashConfig.Theme.USER_DEFINED)
                 .setCustomScreen(R.layout.activity_splash)
-                .setMaxAdDisplayTime(SplashConfig.MaxAdDisplayTime.LONG)
+                .setMaxAdDisplayTime(SplashConfig.MaxAdDisplayTime.SHORT)
                 .setOrientation(SplashConfig.Orientation.AUTO)
 
         );
@@ -93,8 +88,6 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
-        database = FirebaseDatabase.getInstance();
-        reference = FirebaseDatabase.getInstance().getReference("maincategorys");
         recyclerView = this.findViewById(R.id.recyclerView);
         setUpRecyclerView();
         drawerLayout = findViewById(R.id.draw_layout);
@@ -112,56 +105,61 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
                 System.currentTimeMillis(),
                 false);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
-        adapter.setOnItemClickListener(new CategoryAdapter.OnItemClickListener() {
+        getData();
+    }
+
+    private void getData() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        MyApi myApi = retrofit.create(MyApi.class);
+        Call<List<MainCategory>> call = myApi.getCategory();
+        call.enqueue(new Callback<List<MainCategory>>() {
             @Override
-            public void onItemClick(String category) {
-                switch (category){
-                    case "Live Tv": {
-                        Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
-                        profileIntent.putExtra("category", "categorys");
-                        startActivity(profileIntent);
-                        break;
-                    }
-                    case "Movies": {
-                        Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
-                        profileIntent.putExtra("category", "Movies");
-                        startActivity(profileIntent);
-                        break;
-                    }
-                    case "Web Series": {
-                        Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
-                        profileIntent.putExtra("category", "Webseries");
-                        startActivity(profileIntent);
-                        break;
-                    }
-                    case "Live Events": {
-                        Intent profileIntent = new Intent(CategoryActivity.this, LiveEventActivity.class);
-                        profileIntent.putExtra("category", category);
-                        startActivity(profileIntent);
-                        break;
-                    }
-                    default:
-                        Intent liveIntent = new Intent(CategoryActivity.this, channelActivity.class);
-                        liveIntent.putExtra("category", category);
-                        startActivity(liveIntent);
-                        break;
-                }
+            public void onResponse(@NonNull Call<List<MainCategory>> call, @NonNull Response<List<MainCategory>> response) {
+                assert response.body() != null;
+                categoryArrayList =response.body();
+                adapter = new CategoryAdapter(getApplicationContext(), categoryArrayList);
+                recyclerView.setAdapter(adapter);
+                adapter.setOnItemClickListener(category -> {
+                    Intent liveIntent = new Intent(CategoryActivity.this, channelActivity.class);
+                    liveIntent.putExtra("category", category);
+                    startActivity(liveIntent);
+                    StartAppAd startAppAd = new StartAppAd(CategoryActivity.this);
+                    startAppAd.loadAd(StartAppAd.AdMode.AUTOMATIC);
+                    startAppAd.showAd(new AdDisplayListener() {
+                        @Override
+                        public void adHidden(Ad ad) {
+                        }
+
+                        @Override
+                        public void adDisplayed(Ad ad) {
+                        }
+
+                        @Override
+                        public void adClicked(Ad ad) {
+
+                        }
+
+                        @Override
+                        public void adNotDisplayed(Ad ad) {
+                        }
+                    });
+                });
+            }
+
+            @Override
+            public void onFailure(Call<List<MainCategory>> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     private void setUpRecyclerView() {
-        Query query = mainCategoryRef.orderBy("mc");
-        FirestoreRecyclerOptions<mainCategory> options = new FirestoreRecyclerOptions.Builder<mainCategory>()
-                .setQuery(query, mainCategory.class)
-                .build();
-        adapter = new CategoryAdapter(options);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(null);
-        recyclerView.setAdapter(adapter);
-
     }
 
 
@@ -296,68 +294,6 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
     protected void onStart() {
         super.onStart();
         vpnControl.stopVpn(this);
-        adapter.startListening();
-        /*FirebaseRecyclerOptions<mainCategory> options =
-                new FirebaseRecyclerOptions.Builder<mainCategory>()
-                        .setQuery(reference, mainCategory.class)
-                        .build();
-        FirebaseRecyclerAdapter<mainCategory, MainActivity.channelViewholder> adapter =
-                new FirebaseRecyclerAdapter<mainCategory, MainActivity.channelViewholder>(options) {
-                    @Override
-                    protected void onBindViewHolder(@NonNull MainActivity.channelViewholder holder, final int position, @NonNull mainCategory model) {
-
-                        holder.channelcatagory.setText(model.getmc());
-                        channelcategory = model.getmc();
-                        holder.itemView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                String category = model.getmc();
-                                switch (category) {
-                                    case "Live TV": {
-                                        Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
-                                        profileIntent.putExtra("category", "categorys");
-                                        startActivity(profileIntent);
-                                        break;
-                                    }
-                                    case "Movies": {
-                                        Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
-                                        profileIntent.putExtra("category", "Movies");
-                                        startActivity(profileIntent);
-                                        showRewardedVideo();
-                                        break;
-                                    }
-                                    case "Webseries": {
-                                        Intent profileIntent = new Intent(CategoryActivity.this, MainActivity.class);
-                                        profileIntent.putExtra("category", "Webseries");
-                                        startActivity(profileIntent);
-                                        showRewardedVideo();
-                                        break;
-                                    }
-                                    default:
-                                        Intent liveIntent = new Intent(CategoryActivity.this, channelActivity.class);
-                                        liveIntent.putExtra("category", category);
-                                        startActivity(liveIntent);
-                                        break;
-                                }
-
-                            }
-
-                        });
-                    }
-
-                    @NonNull
-                    @Override
-                    public MainActivity.channelViewholder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-                        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.tvlayout, viewGroup, false);
-                        MainActivity.channelViewholder viewHolder = new MainActivity.channelViewholder(view);
-                        return viewHolder;
-                    }
-
-                };
-
-        recyclerView.setAdapter(adapter);
-
-        adapter.startListening();*/
     }
 
 
@@ -373,59 +309,6 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
     @Override
     protected void onResume() {
         vpnControl.stopVpn(this);
-        AlertDialog.Builder adb = new AlertDialog.Builder(this);
-        LayoutInflater adbInflater = LayoutInflater.from(this);
-        View eulaLayout = adbInflater.inflate(R.layout.checkbox, null);
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        String skipMessage = settings.getString("skipMessage", "NOT checked");
-
-        dontShowAgain = (CheckBox) eulaLayout.findViewById(R.id.skip);
-        adb.setView(eulaLayout);
-        adb.setTitle("CopyRight Policy");
-        adb.setMessage(Html.fromHtml("All Links and Streams are available Free in Internet. We just arranged in one platform to use people enjoy with Live! Please Write an Email to us if you had any complaints Thank you. Email:doratv.app@gmail.com"));
-
-        adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                String checkBoxResult = "NOT checked";
-
-                if (dontShowAgain.isChecked()) {
-                    checkBoxResult = "checked";
-                }
-
-                SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-                SharedPreferences.Editor editor = settings.edit();
-
-                editor.putString("skipMessage", checkBoxResult);
-                editor.apply();
-
-                // Do what you want to do on "OK" action
-
-                return;
-            }
-        });
-
-        adb.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                String checkBoxResult = "NOT checked";
-
-                if (dontShowAgain.isChecked()) {
-                    checkBoxResult = "checked";
-                }
-
-                SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-                SharedPreferences.Editor editor = settings.edit();
-
-                editor.putString("skipMessage", checkBoxResult);
-                editor.commit();
-
-                return;
-            }
-        });
-
-        if (!skipMessage.equals("checked")) {
-            adb.show();
-        }
-
         super.onResume();
     }
 
@@ -438,6 +321,5 @@ public class CategoryActivity extends AppCompatActivity implements NavigationVie
     @Override
     protected void onStop() {
         super.onStop();
-        adapter.stopListening();
     }
 }

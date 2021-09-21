@@ -13,18 +13,14 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.crazybotstudio.doratv.R;
-import com.crazybotstudio.doratv.adapter.CategoryAdapter;
 import com.crazybotstudio.doratv.adapter.LiveEventAdapter;
 import com.crazybotstudio.doratv.models.channel;
-import com.crazybotstudio.doratv.models.mainCategory;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.startapp.sdk.adsbase.Ad;
 import com.startapp.sdk.adsbase.StartAppAd;
 import com.startapp.sdk.adsbase.StartAppSDK;
-import com.startapp.sdk.adsbase.adlisteners.AdDisplayListener;
 
 import java.util.Objects;
 
