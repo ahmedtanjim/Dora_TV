@@ -3,11 +3,11 @@ package com.crazybotstudio.doratv.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class mainCategory implements Parcelable{
+public class MainCategory implements Parcelable{
     private String mc;
-    public mainCategory() {}
+    public MainCategory() {}
 
-    protected mainCategory(Parcel in) {
+    protected MainCategory(Parcel in) {
         mc = in.readString();
     }
 
